@@ -1,7 +1,7 @@
 # Critical path in Python
 
-`pmcontrols.cpm` takes a list of activities — each with an `id`, its
-`predecessors`, and a `duration` — runs the forward and backward pass, and
+`pmcontrols.cpm` takes a list of activities, each with an `id`, its
+`predecessors`, and a `duration`. It runs the forward and backward pass and
 returns earliest/latest start and finish, total slack, and the critical
 path (the activities with zero slack).
 
@@ -36,36 +36,36 @@ activity  duration   es   ef   ls   lf  slack  critical
        H       2.0 13.0 15.0 13.0 15.0    0.0      True
 ```
 
-This is the textbook General Foundry network; the critical path is
+This is the textbook General Foundry network. The critical path is
 A-C-E-G-H at 15 periods, with B and D carrying one period of slack and F
 carrying six. The whole schedule is reproduced to the digit in the
 validation suite.
 
 ## Input
 
-- **`predecessors`** may be a list (`["A", "B"]`) or a comma-separated
+* **`predecessors`** may be a list (`["A", "B"]`) or a comma-separated
   string (`"A, B"`). An activity with no predecessors starts at time zero.
-- **`duration`** is the field name by default; pass `duration="dur"` to
+* **`duration`** is the field name by default; pass `duration="dur"` to
   read a differently named column.
-- Activity ids are stringified, so integer ids work too.
+* Activity ids are stringified, so integer ids work too.
 
 ## What you get back
 
 A single `Result`:
 
-- `r.stats` — `project_duration`, `n_activities`, `n_critical`.
-- `r.table` — one row per activity with `es`, `ef`, `ls`, `lf`, `slack`,
+* `r.stats`: `project_duration`, `n_activities`, `n_critical`.
+* `r.table`: one row per activity with `es`, `ef`, `ls`, `lf`, `slack`,
   `critical`.
-- `r.meta["critical_activities"]` — the critical path in topological order.
+* `r.meta["critical_activities"]`: the critical path in topological order.
 
-The identity `slack = LS − ES = LF − EF` holds for every activity and is
+The identity `slack = LS - ES = LF - EF` holds for every activity and is
 asserted in the test suite.
 
 ## Errors
 
-A precedence **cycle** raises a `ValueError` that names the cycle; an
-activity that lists an **unknown predecessor** raises a `ValueError`
-naming both; a **negative duration** is rejected. You get a clear message
+A precedence **cycle** raises a `ValueError` that names the cycle. An
+activity that lists an **unknown predecessor** raises a `ValueError` naming
+both, and a **negative duration** is rejected. You get a clear message
 instead of a silently wrong schedule.
 
 The forward/backward pass follows the standard activity-on-node

@@ -97,15 +97,15 @@ class Result:
         }
 
     def summary(self) -> str:
-        lines = [f"pmcontrols {self.method} — {self.meta.get('computed_at', '')}"]
+        lines = [f"pmcontrols {self.method} - {self.meta.get('computed_at', '')}"]
         for k, v in self.stats.items():
             lines.append(f"  {k:<24} {v:>12.4f}" if isinstance(v, float) else f"  {k:<24} {v}")
         if self.alerts:
             lines.append("Alerts:")
             lines += [f"  ! {a}" for a in self.alerts]
-            lines.append("Verdict: ATTENTION — indicators breach thresholds.")
+            lines.append("Verdict: ATTENTION - indicators breach thresholds.")
         else:
-            lines.append("Verdict: on track — no indicator breaches thresholds.")
+            lines.append("Verdict: on track - no indicator breaches thresholds.")
         return "\n".join(lines)
 
 

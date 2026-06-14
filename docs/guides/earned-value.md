@@ -20,11 +20,11 @@ print(r.summary())
 
 | Indicator | Meaning |
 | --------- | ------- |
-| `cv`, `sv` | cost and schedule variance (EV − AC, EV − PV) |
+| `cv`, `sv` | cost and schedule variance (EV - AC, EV - PV) |
 | `cpi`, `spi` | cost and schedule performance index (EV/AC, EV/PV) |
 | `eac_cpi` | estimate at completion, BAC / CPI |
-| `eac_typical` | AC + (BAC − EV), remaining work at planned efficiency |
-| `eac_cpi_spi` | the CPI×SPI blended forecast |
+| `eac_typical` | AC + (BAC - EV), remaining work at planned efficiency |
+| `eac_cpi_spi` | the CPI by SPI blended forecast |
 | `etc`, `vac` | estimate to complete, variance at completion |
 | `tcpi_bac` | to-complete performance index against BAC |
 
@@ -35,11 +35,11 @@ at completion EV = PV = BAC, so SPI = 1.0 even on a project that delivered
 months late. Lipke's **earned schedule** (Lipke, 2003) fixes this by
 working in the time dimension:
 
-- **ES** — the time at which the plan had earned what you have now earned,
-  by linear interpolation on the cumulative PV curve.
-- **SV(t) = ES − AT**, **SPI(t) = ES / AT** — a schedule index that keeps
-  reporting slippage all the way to the finish.
-- **IEAC(t) = PD / SPI(t)** — a forecast of the total project *duration*.
+* **ES** is the time at which the plan had earned what you have now earned,
+  found by linear interpolation on the cumulative PV curve.
+* **SV(t) = ES - AT** and **SPI(t) = ES / AT** give a schedule index that
+  keeps reporting slippage all the way to the finish.
+* **IEAC(t) = PD / SPI(t)** forecasts the total project *duration*.
 
 ```python
 r.stats["es"]        # earned schedule, in PMB time units
@@ -51,7 +51,7 @@ r.stats["ieac_t"]    # forecast completion duration
 
 `pm.plan(periods, pv)` returns a `PMB` that validates the planned-value
 curve is non-decreasing and ends at BAC. It round-trips through JSON
-(`save`/`load`, `to_json`/`from_json`) so the baseline is a committed,
+(`save`/`load`, `to_json`/`from_json`), so the baseline is a committed,
 auditable artifact rather than a cell in a spreadsheet. `pm.evm` accepts
 either a `PMB` object or a path to a saved one.
 
