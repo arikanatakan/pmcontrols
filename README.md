@@ -102,4 +102,5 @@ process control, acceptance sampling (see lotsampling), generic LP modeling
 
 ## License
 
-MIT.
+MIT. Written and maintained by [Atakan Arikan](https://github.com/arikanatakan),
+MSc Student at Tsinghua University and Politecnico di Milano.
