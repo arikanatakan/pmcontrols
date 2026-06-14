@@ -14,20 +14,28 @@ standard formulations and checked against reference values in the test suite.
 
 Every project office computes CPI and SPI, and almost all of it happens in
 spreadsheets. R and commercial tools (Primavera, @RISK) cover schedule risk
-and earned value; Python has no maintained library that a cost engineer or a
-project-controls researcher can `pip install`. This is an attempt to fix
-that, with a few specific goals:
+and earned value. In Python the picture is uneven: the scheduling basics
+exist, but the cost and forecasting side is thin, and nothing ties them
+together under one validated interface.
 
-* the critical path from the full forward and backward pass (ES, EF, LS, LF,
-  slack), not a longest-chain guess
-* PERT with a Monte Carlo completion distribution and per-activity
-  criticality indices, which the analytic three-point method cannot give
-* schedule crashing as optimization: the cheapest set of compressions that
-  meets a deadline, solved as a linear program
-* earned value with Lipke's earned schedule (ES, SPI(t), IEAC(t)), which
-  plain SPI reports wrong late in a project
-* an API that works headless, so a weekly cost and schedule review can run
-  as a cron job
+| Method | State of the Python ecosystem |
+| ------ | ----------------------------- |
+| Critical path and PERT | available (pyCritical, networkx, assorted scripts) |
+| Schedule crashing (time/cost LP) | no packaged library; built ad hoc on PuLP or SciPy |
+| Earned value, full indicator set | only minimal or scattered implementations |
+| Earned schedule (Lipke SPI(t)) | no maintained package |
+| All of the above, validated, under one API | none |
+
+pmcontrols is an attempt to fill that gap, with a few specific goals:
+
+* compute every result from the defining formulation (the forward and
+  backward pass, the linear program, Lipke's interpolation), not from
+  spreadsheet shortcuts
+* return one consistent `Result` with provenance, so a number can be
+  recomputed and audited months later
+* validate every released number against published reference values on each
+  CI run
+* work headless, so a weekly cost and schedule review can run as a cron job
 
 ```
 pip install pmcontrols
