@@ -1,5 +1,8 @@
 # pmcontrols
 
+[![CI](https://github.com/arikanatakan/pmcontrols/actions/workflows/ci.yml/badge.svg)](https://github.com/arikanatakan/pmcontrols/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/arikanatakan/pmcontrols)](LICENSE)
+
 Project scheduling and earned value control for Python.
 
 CPM, PERT with Monte Carlo schedule risk, minimum-cost crashing, and
