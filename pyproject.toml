@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pmcontrols"
-version = "0.1.0"
+version = "0.2.0"
 description = "Project scheduling and earned value control for Python: CPM, PERT with Monte Carlo schedule risk, minimum-cost crashing, EVM and earned schedule, validated against published reference values."
 readme = "README.md"
 license = { text = "MIT" }
@@ -30,7 +30,8 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "ruff", "mypy", "build"]
+plot = ["matplotlib>=3.5"]
+dev = ["pytest>=7", "ruff", "mypy", "build", "matplotlib>=3.5"]
 docs = ["mkdocs-material"]
 
 [project.urls]

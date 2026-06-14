@@ -26,6 +26,7 @@ major version 0/1.
 - `plan(periods, pv) -> PMB`
 - `evm(pmb, ev, ac, at, thresholds=None)`
 - `earned_schedule(pmb, ev) -> float`
+- `gantt(result, ax=None, show_slack=True, title=None) -> (figure, axes)` (needs the `plot` extra)
 
 ## PMB
 

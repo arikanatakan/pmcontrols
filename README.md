@@ -41,11 +41,17 @@ pmcontrols is an attempt to fill that gap, with a few specific goals:
 pip install pmcontrols
 ```
 
+For Gantt charts, add the optional plotting extra:
+
+```
+pip install "pmcontrols[plot]"
+```
+
 Documentation: https://arikanatakan.github.io/pmcontrols/
 
 ## Status
 
-Version 0.1.0 is on PyPI. Implemented and tested:
+Version 0.2.0 is on PyPI. Implemented and tested:
 
 * `cpm`: forward and backward pass returning ES, EF, LS, LF, total slack,
   and the zero-float critical path, with clear errors on cycles and unknown
@@ -58,6 +64,9 @@ Version 0.1.0 is on PyPI. Implemented and tested:
 * `evm`, `plan`, `earned_schedule`: cost and schedule variance, CPI and SPI,
   the estimate-at-completion family, TCPI and VAC, and Lipke's earned
   schedule (ES, SPI(t), IEAC(t)) evaluated against a frozen baseline
+* `gantt`: an optional Gantt chart of a cpm or crash schedule (matplotlib,
+  via the `[plot]` extra), with the critical path highlighted and total float
+  shown, kept separate from the statistics
 * `Result`: every analysis returns named statistics, a tidy table,
   structured alerts, `r.ok`, `r.summary()`, and a JSON-safe `to_dict()` with
   provenance (version, input hash, timestamp)
@@ -96,6 +105,13 @@ The numbers above are the standard General Foundry network from Render,
 Stair & Hanna; the 15-period schedule and the A-C-E-G-H critical path are
 computed by the forward and backward pass, and reproduced exactly as a
 validation case.
+
+Draw that schedule as a Gantt chart (needs `pip install "pmcontrols[plot]"`):
+
+```python
+fig, ax = pm.gantt(r)        # critical path in red, total float in light grey
+fig.savefig("schedule.png")
+```
 
 Schedule risk from three-point estimates, with the Monte Carlo completion
 distribution the analytic method cannot give:
@@ -143,8 +159,7 @@ first.
 
 | Version | Scope |
 |---------|-------|
-| 0.2     | published PMI/Lipke earned-schedule case-study validation; Gantt and OC plotting, kept separate from the statistics |
-| 0.3     | resource leveling and constrained scheduling; schedule risk drivers (correlation, risk events); EVM from time-phased ledgers |
+| 0.3     | published PMI/Lipke earned-schedule case-study validation; OC plotting; resource leveling and constrained scheduling; EVM from time-phased ledgers |
 | 0.4     | critical chain buffers; probabilistic crashing; earned-schedule forecasting variants; JOSS paper |
 
 Out of scope: Gantt-chart project editors (use dedicated PM tools), process
