@@ -1,0 +1,36 @@
+site_name: pmcontrols
+site_description: Project scheduling and earned value control for Python, validated against published reference values.
+repo_url: https://github.com/arikanatakan/pmcontrols
+repo_name: arikanatakan/pmcontrols
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle: { icon: material/brightness-7, name: Dark mode }
+    - scheme: slate
+      primary: indigo
+      toggle: { icon: material/brightness-4, name: Light mode }
+  features:
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Guides:
+      - Critical path in Python: guides/critical-path.md
+      - PERT and schedule risk: guides/pert-risk.md
+      - Schedule crashing as a linear program: guides/crashing.md
+      - Earned value and earned schedule: guides/earned-value.md
+      - EVM control as a cron job: guides/evm-cron.md
+  - Reference:
+      - API: reference/api.md
+      - Validation: reference/validation.md
+  - For agents: agents.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - pymdownx.highlight
+  - pymdownx.superfences

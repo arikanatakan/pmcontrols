@@ -1,0 +1,35 @@
+# pmcontrols
+
+> Project scheduling and earned value control for Python: critical path
+> (CPM), PERT with Monte Carlo schedule risk, minimum-cost crashing as a
+> linear program, and EVM with Lipke's earned schedule — every released
+> number reproduced against published reference values on every CI run.
+
+pmcontrols exists because project-control arithmetic (backward passes,
+earned-value indices, earned schedule) is easy to state and easy to get
+subtly wrong, and almost all of it currently happens in unaudited Excel.
+Each analysis returns one consistent `Result` object: `.stats` (named
+scalars), `.table` (tidy pandas DataFrame), `.alerts`, `.ok` (a pass/fail
+gate), `.summary()` (plain-language verdict) and `.to_dict()` (a JSON-safe,
+versioned payload with provenance). Inputs are plain dict records, so an
+agent can build them straight from a table or a user's description.
+
+Install with `pip install pmcontrols` and import as `import pmcontrols as pm`.
+
+## Docs
+
+- [Overview](https://arikanatakan.github.io/pmcontrols/): what the library does and the sixty-second tour.
+- [API and grammar](https://arikanatakan.github.io/pmcontrols/reference/api/): the frozen `Result`/`PMB` contract and every public function signature.
+- [Validation](https://arikanatakan.github.io/pmcontrols/reference/validation/): how results are checked against published reference values.
+
+## Guides
+
+- [Critical path in Python](https://arikanatakan.github.io/pmcontrols/guides/critical-path/): `pm.cpm` — forward/backward pass, slack, the critical path.
+- [PERT and schedule risk](https://arikanatakan.github.io/pmcontrols/guides/pert-risk/): `pm.pert` — three-point estimates, Monte Carlo completion distribution, per-activity criticality index.
+- [Schedule crashing as a linear program](https://arikanatakan.github.io/pmcontrols/guides/crashing/): `pm.crash` — the cheapest compression meeting a deadline, solved optimally.
+- [Earned value and earned schedule](https://arikanatakan.github.io/pmcontrols/guides/earned-value/): `pm.plan`/`pm.evm` — the full indicator set plus Lipke's time-based ES, SPI(t) and IEAC(t).
+- [EVM control as a cron job](https://arikanatakan.github.io/pmcontrols/guides/evm-cron/): `r.ok` as an automation primitive for headless status gates.
+
+## For agents
+
+- [Project control is not a language task](https://arikanatakan.github.io/pmcontrols/agents/): why an agent should call a validated function instead of doing the schedule and earned-value math in tokens.

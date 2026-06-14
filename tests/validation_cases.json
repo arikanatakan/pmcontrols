@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "note": "Seed of the public validation suite. Cases are either hand-derived with a fully published derivation, or reproduce the General Foundry example as printed in Render, Stair & Hanna (Quantitative Analysis for Management) and standard ETM course materials. Only the numeric activity table is reproduced (facts/data, not expression). PMI/Lipke earned-schedule literature cases will be verified privately before 0.1.",
+  "cases": [
+    {
+      "id": "cpm-general-foundry-001",
+      "method": "cpm",
+      "source": "Render, Stair & Hanna, General Foundry example (Figures 13.3-13.5, Table 13.3)",
+      "derivation": "Network: A(2), B(3) from start; C(2) after A; D(4) after B; E(4) after C; F(3) after C; G(5) after D,E; H(2) after F,G. Forward pass gives EF: A2 B3 C4 D7 E8 F7 G13 H15; backward from LF=15. Critical path A-C-E-G-H, duration 15, slacks: B=1, D=1, F=6, others 0.",
+      "inputs": {
+        "activities": [
+          {"id": "A", "predecessors": [], "duration": 2},
+          {"id": "B", "predecessors": [], "duration": 3},
+          {"id": "C", "predecessors": ["A"], "duration": 2},
+          {"id": "D", "predecessors": ["B"], "duration": 4},
+          {"id": "E", "predecessors": ["C"], "duration": 4},
+          {"id": "F", "predecessors": ["C"], "duration": 3},
+          {"id": "G", "predecessors": ["D", "E"], "duration": 5},
+          {"id": "H", "predecessors": ["F", "G"], "duration": 2}
+        ]
+      },
+      "expected": {
+        "project_duration": 15,
+        "critical_path": ["A", "C", "E", "G", "H"],
+        "schedule": {
+          "A": {"es": 0, "ef": 2, "ls": 0, "lf": 2, "slack": 0},
+          "B": {"es": 0, "ef": 3, "ls": 1, "lf": 4, "slack": 1},
+          "C": {"es": 2, "ef": 4, "ls": 2, "lf": 4, "slack": 0},
+          "D": {"es": 3, "ef": 7, "ls": 4, "lf": 8, "slack": 1},
+          "E": {"es": 4, "ef": 8, "ls": 4, "lf": 8, "slack": 0},
+          "F": {"es": 4, "ef": 7, "ls": 10, "lf": 13, "slack": 6},
+          "G": {"es": 8, "ef": 13, "ls": 8, "lf": 13, "slack": 0},
+          "H": {"es": 13, "ef": 15, "ls": 13, "lf": 15, "slack": 0}
+        }
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "crash-general-foundry-001",
+      "method": "crash",
+      "source": "Render, Stair & Hanna, General Foundry crash data (Table 13.9)",
+      "derivation": "Crash costs/week: A=1000(max1), B=2000(max2), C=1000(max1), D=1000(max1), E=1000(max2), F=500(max1), G=2000(max3), H=3000(max1). Target 14 from 15: cheapest single cut on the critical path A-C-E-G-H costs $1000 (A, C or E). Target 13: after one $1000 cut, path B-D-G-H (14) also binds; cutting G serves both paths at $2000, equal to cutting C/E ($1000) plus D ($1000); optimum total = $3000.",
+      "inputs": {
+        "activities": [
+          {"id": "A", "predecessors": [], "duration": 2, "crash_duration": 1, "crash_cost": 1000},
+          {"id": "B", "predecessors": [], "duration": 3, "crash_duration": 1, "crash_cost": 2000},
+          {"id": "C", "predecessors": ["A"], "duration": 2, "crash_duration": 1, "crash_cost": 1000},
+          {"id": "D", "predecessors": ["B"], "duration": 4, "crash_duration": 3, "crash_cost": 1000},
+          {"id": "E", "predecessors": ["C"], "duration": 4, "crash_duration": 2, "crash_cost": 1000},
+          {"id": "F", "predecessors": ["C"], "duration": 3, "crash_duration": 2, "crash_cost": 500},
+          {"id": "G", "predecessors": ["D", "E"], "duration": 5, "crash_duration": 2, "crash_cost": 2000},
+          {"id": "H", "predecessors": ["F", "G"], "duration": 2, "crash_duration": 1, "crash_cost": 3000}
+        ]
+      },
+      "expected": {
+        "cost_to_14": 1000,
+        "cost_to_13": 3000
+      },
+      "tol": 1e-6
+    },
+    {
+      "id": "pert-hand-001",
+      "method": "pert",
+      "source": "Hand derivation; classical beta approximation te=(a+4m+b)/6, var=((b-a)/6)^2",
+      "derivation": "Two activities in series: X(a=1,m=2,b=9): te=(1+8+9)/6=3, var=(8/6)^2=16/9. Y(a=2,m=3,b=10) after X: te=(2+12+10)/6=4, var=(8/6)^2=16/9. Expected duration 7, variance 32/9, sigma=sqrt(32)/3=1.8856.",
+      "inputs": {
+        "activities": [
+          {"id": "X", "predecessors": [], "a": 1, "m": 2, "b": 9},
+          {"id": "Y", "predecessors": ["X"], "a": 2, "m": 3, "b": 10}
+        ]
+      },
+      "expected": {
+        "expected_duration": 7.0,
+        "sigma_critical_path": 1.8856180831641267
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "evm-hand-001",
+      "method": "evm",
+      "source": "Hand derivation; standard EVM/ES formulas (PMBOK; Lipke 2003)",
+      "derivation": "Linear PMB: BAC=100000 over PD=10 periods, PV_t=10000*t. Status at AT=4 with EV=30000, AC=35000. PV=40000. CV=-5000, SV=-10000, CPI=6/7=0.857142..., SPI=0.75. EAC(BAC/CPI)=116666.66..., EAC(AC+BAC-EV)=105000, ETC=EAC-AC=81666.66..., TCPI=(100000-30000)/(100000-35000)=70/65=1.076923..., VAC=-16666.66... ES: PV curve hits 30000 exactly at t=3, so ES=3, SV(t)=-1, SPI(t)=0.75, IEAC(t)=10/0.75=13.333...",
+      "inputs": {
+        "periods": [0,1,2,3,4,5,6,7,8,9,10],
+        "pv": [0,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000],
+        "ev": 30000, "ac": 35000, "at": 4
+      },
+      "expected": {
+        "pv": 40000, "cv": -5000, "sv": -10000,
+        "cpi": 0.8571428571428571, "spi": 0.75,
+        "eac_cpi": 116666.66666666666, "eac_typical": 105000,
+        "etc": 81666.66666666666, "tcpi_bac": 1.0769230769230769,
+        "vac": -16666.666666666657,
+        "es": 3.0, "sv_t": -1.0, "spi_t": 0.75,
+        "ieac_t": 13.333333333333334
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "es-interp-001",
+      "method": "earned_schedule",
+      "source": "Hand derivation; Lipke interpolation formula",
+      "derivation": "Same linear PMB; EV=34000 lies between PV_3=30000 and PV_4=40000: ES = 3 + (34000-30000)/(40000-30000)*(4-3) = 3.4.",
+      "inputs": {
+        "periods": [0,1,2,3,4,5,6,7,8,9,10],
+        "pv": [0,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000],
+        "ev": 34000
+      },
+      "expected": { "es": 3.4 },
+      "tol": 1e-12
+    },
+    {
+      "id": "cpm-series-parallel-002",
+      "method": "cpm",
+      "source": "Hand derivation; standard forward/backward pass",
+      "derivation": "A(3) from start; B(2) after A; C(4) after A; D(2) after B,C. Forward EF: A3 B5 C7 D9. Backward from LF=9: D ls7; B ls5 (slack 2); C ls3; A ls0. Critical path A-C-D, duration 9.",
+      "inputs": {
+        "activities": [
+          {"id": "A", "predecessors": [], "duration": 3},
+          {"id": "B", "predecessors": ["A"], "duration": 2},
+          {"id": "C", "predecessors": ["A"], "duration": 4},
+          {"id": "D", "predecessors": ["B", "C"], "duration": 2}
+        ]
+      },
+      "expected": {
+        "project_duration": 9,
+        "critical_path": ["A", "C", "D"],
+        "schedule": {
+          "A": {"es": 0, "ef": 3, "ls": 0, "lf": 3, "slack": 0},
+          "B": {"es": 3, "ef": 5, "ls": 5, "lf": 7, "slack": 2},
+          "C": {"es": 3, "ef": 7, "ls": 3, "lf": 7, "slack": 0},
+          "D": {"es": 7, "ef": 9, "ls": 7, "lf": 9, "slack": 0}
+        }
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "pert-parallel-002",
+      "method": "pert",
+      "source": "Hand derivation; classical beta approximation",
+      "derivation": "X(a=2,m=4,b=6): te=4, var=(4/6)^2=4/9. Y(a=1,m=2,b=9) after X: te=3, var=(8/6)^2=16/9. Z(a=1,m=2,b=3) after X: te=2, var=(2/6)^2=1/9. W(a=1,m=1,b=1) after Y,Z: te=1, var=0. te paths: X-Y-W=8 (critical), X-Z-W=7. Expected duration 8; variance on critical path 4/9+16/9=20/9, sigma=sqrt(20)/3=1.4907119849998598.",
+      "inputs": {
+        "activities": [
+          {"id": "X", "predecessors": [], "a": 2, "m": 4, "b": 6},
+          {"id": "Y", "predecessors": ["X"], "a": 1, "m": 2, "b": 9},
+          {"id": "Z", "predecessors": ["X"], "a": 1, "m": 2, "b": 3},
+          {"id": "W", "predecessors": ["Y", "Z"], "a": 1, "m": 1, "b": 1}
+        ]
+      },
+      "expected": {
+        "expected_duration": 8.0,
+        "sigma_critical_path": 1.4907119849998598
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "evm-on-plan-002",
+      "method": "evm",
+      "source": "Hand derivation; standard EVM/ES formulas (PMBOK; Lipke 2003)",
+      "derivation": "Linear PMB BAC=100000 over PD=10, PV_t=10000*t. At AT=4 with EV=AC=40000: PV=40000, CV=0, SV=0, CPI=1, SPI=1. EAC(BAC/CPI)=100000, EAC(typical)=AC+(BAC-EV)=100000, VAC=0. ES: PV hits 40000 at t=4, so ES=4, SV(t)=0, SPI(t)=1, IEAC(t)=10.",
+      "inputs": {
+        "periods": [0,1,2,3,4,5,6,7,8,9,10],
+        "pv": [0,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000],
+        "ev": 40000, "ac": 40000, "at": 4
+      },
+      "expected": {
+        "pv": 40000, "cv": 0, "sv": 0,
+        "cpi": 1.0, "spi": 1.0,
+        "eac_cpi": 100000.0, "eac_typical": 100000.0,
+        "vac": 0.0, "es": 4.0, "sv_t": 0.0, "spi_t": 1.0,
+        "ieac_t": 10.0
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "evm-ahead-003",
+      "method": "evm",
+      "source": "Hand derivation; standard EVM/ES formulas (PMBOK; Lipke 2003)",
+      "derivation": "Same linear PMB. At AT=4 with EV=50000, AC=45000: PV=40000, CV=5000, SV=10000, CPI=50000/45000=1.1111..., SPI=1.25. EAC(BAC/CPI)=90000, EAC(typical)=95000, VAC=10000. ES: PV hits 50000 at t=5, so ES=5, SV(t)=1, SPI(t)=1.25, IEAC(t)=8.",
+      "inputs": {
+        "periods": [0,1,2,3,4,5,6,7,8,9,10],
+        "pv": [0,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000],
+        "ev": 50000, "ac": 45000, "at": 4
+      },
+      "expected": {
+        "pv": 40000, "cv": 5000, "sv": 10000,
+        "cpi": 1.1111111111111112, "spi": 1.25,
+        "eac_cpi": 90000.0, "eac_typical": 95000.0,
+        "vac": 10000.0, "es": 5.0, "sv_t": 1.0, "spi_t": 1.25,
+        "ieac_t": 8.0
+      },
+      "tol": 1e-9
+    },
+    {
+      "id": "es-interp-003",
+      "method": "earned_schedule",
+      "source": "Hand derivation; Lipke interpolation on a nonlinear PV curve",
+      "derivation": "Nonlinear PMB periods [0..5], pv [0,20,50,90,140,200]. EV=70 lies between PV_2=50 and PV_3=90: ES = 2 + (70-50)/(90-50)*(3-2) = 2.5.",
+      "inputs": {
+        "periods": [0,1,2,3,4,5],
+        "pv": [0,20,50,90,140,200],
+        "ev": 70
+      },
+      "expected": { "es": 2.5 },
+      "tol": 1e-12
+    }
+  ]
+}

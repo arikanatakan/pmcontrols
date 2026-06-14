@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use pmcontrols in research, please cite it."
+title: "pmcontrols: project scheduling and earned value control for Python"
+type: software
+authors:
+  - given-names: Atakan
+    family-names: Arikan
+version: 0.1.0
+date-released: 2026-06-15
+repository-code: "https://github.com/arikanatakan/pmcontrols"
+license: MIT
