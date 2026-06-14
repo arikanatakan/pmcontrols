@@ -92,6 +92,11 @@ r.meta["critical_activities"]    # ['A', 'C', 'E', 'G', 'H']
 r.table                          # ES/EF/LS/LF/slack per activity
 ```
 
+The numbers above are the standard General Foundry network from Render,
+Stair & Hanna; the 15-period schedule and the A-C-E-G-H critical path are
+computed by the forward and backward pass, and reproduced exactly as a
+validation case.
+
 Schedule risk from three-point estimates, with the Monte Carlo completion
 distribution the analytic method cannot give:
 
