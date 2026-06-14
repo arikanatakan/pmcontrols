@@ -6,35 +6,63 @@
 
 Project scheduling and earned value control for Python.
 
-CPM, PERT with Monte Carlo schedule risk, minimum-cost crashing, and
-EVM/earned-schedule control — computed from the defining formulations,
-never from spreadsheet conventions, and checked against published
-reference values in the test suite.
-
-Companion to [lotsampling](https://github.com/arikanatakan/lotsampling) (acceptance
-sampling): lotsampling judges the lot, pmcontrols keeps the project honest.
+Critical path and PERT scheduling, minimum-cost schedule compression, and
+earned value management with earned schedule. Results are computed from the
+standard formulations and checked against reference values in the test suite.
 
 ## Motivation
 
-Every project office computes CPI and SPI; almost all of it happens in
-Excel. R and commercial tools (Primavera, Deltek, @RISK) cover schedule
-risk and earned value; in Python the landscape is a 4 KB CPM toy and an
-abandoned ERP add-on. There is no maintained library a cost engineer or
-a project-controls researcher can `pip install` to get:
+Every project office computes CPI and SPI, and almost all of it happens in
+spreadsheets. R and commercial tools (Primavera, @RISK) cover schedule risk
+and earned value; Python has no maintained library that a cost engineer or a
+project-controls researcher can `pip install`. This is an attempt to fix
+that, with a few specific goals:
 
-- the **critical path** with full ES/EF/LS/LF/slack accounting
-- **PERT** three-point analysis plus what the textbook procedure cannot
-  give you: a Monte Carlo completion distribution and per-activity
-  **criticality indices**
-- **crashing as optimization** — the cheapest set of compressions
-  meeting a deadline, solved as the classical time/cost trade-off LP
-  rather than by manual marginal-cost inspection
-- **EVM with earned schedule** — the full indicator set (CV, SV, CPI,
-  SPI, the EAC family, TCPI, VAC) plus Lipke's time-based ES, SPI(t)
-  and duration forecast IEAC(t), which plain EVM gets wrong late in
-  projects
+* the critical path from the full forward and backward pass (ES, EF, LS, LF,
+  slack), not a longest-chain guess
+* PERT with a Monte Carlo completion distribution and per-activity
+  criticality indices, which the analytic three-point method cannot give
+* schedule crashing as optimization: the cheapest set of compressions that
+  meets a deadline, solved as a linear program
+* earned value with Lipke's earned schedule (ES, SPI(t), IEAC(t)), which
+  plain SPI reports wrong late in a project
+* an API that works headless, so a weekly cost and schedule review can run
+  as a cron job
 
-## Quickstart
+```
+pip install pmcontrols
+```
+
+Documentation: https://arikanatakan.github.io/pmcontrols/
+
+## Status
+
+Version 0.1.0 is on PyPI. Implemented and tested:
+
+* `cpm`: forward and backward pass returning ES, EF, LS, LF, total slack,
+  and the zero-float critical path, with clear errors on cycles and unknown
+  predecessors
+* `pert`: three-point estimates (te = (a + 4m + b) / 6) along the critical
+  path, plus a Monte Carlo simulation reporting the completion distribution
+  (p50, p80, p95) and a per-activity criticality index
+* `crash`: minimum-cost schedule compression to a target date, solved as the
+  classical time/cost trade-off linear program (scipy, HiGHS)
+* `evm`, `plan`, `earned_schedule`: cost and schedule variance, CPI and SPI,
+  the estimate-at-completion family, TCPI and VAC, and Lipke's earned
+  schedule (ES, SPI(t), IEAC(t)) evaluated against a frozen baseline
+* `Result`: every analysis returns named statistics, a tidy table,
+  structured alerts, `r.ok`, `r.summary()`, and a JSON-safe `to_dict()` with
+  provenance (version, input hash, timestamp)
+* `PMB`: a Performance Measurement Baseline that validates a non-decreasing
+  planned-value curve and round-trips through JSON
+* a reference-case validation suite (tests/validation_cases.json), with the
+  General Foundry network (full schedule, critical path, and optimal crash
+  costs) and hand-derived EVM and earned-schedule cases reproduced in CI
+  across Python 3.10 to 3.12
+
+## Usage
+
+Critical path, slack, and the full schedule:
 
 ```python
 import pmcontrols as pm
@@ -51,58 +79,64 @@ activities = [
 ]
 
 r = pm.cpm(activities)
-r.stats["project_duration"]        # 15.0
-r.meta["critical_activities"]      # ['A', 'C', 'E', 'G', 'H']
-r.table                            # tidy ES/EF/LS/LF/slack DataFrame
-
-# Cheapest way to finish in 13 periods (linear program):
-r = pm.crash(crash_activities, target=13)
-r.stats["total_crash_cost"]        # optimal, not greedy
-
-# Plan once, freeze, control forever:
-pm.plan(periods, pv_curve).save("pmb.json")     # commit this to git
-r = pm.evm("pmb.json", ev=30_000, ac=35_000, at=4)
-r.ok                 # False — CPI and SPI(t) below threshold
-print(r.summary())   # audit text with plain-language verdict
-r.stats["ieac_t"]    # earned-schedule duration forecast
+r.stats["project_duration"]      # 15.0
+r.meta["critical_activities"]    # ['A', 'C', 'E', 'G', 'H']
+r.table                          # ES/EF/LS/LF/slack per activity
 ```
 
-`r.ok` is the automation primitive: a weekly cron job can evaluate the
-latest actuals against the frozen PMB and exit nonzero the moment cost
-or schedule efficiency breaches a threshold.
+Schedule risk from three-point estimates, with the Monte Carlo completion
+distribution the analytic method cannot give:
 
-## Validation philosophy
+```python
+r = pm.pert([
+    {"id": "X", "predecessors": [],    "a": 1, "m": 2, "b": 9},
+    {"id": "Y", "predecessors": ["X"], "a": 2, "m": 3, "b": 10},
+])
+r.stats["mc_p80"]                # 80th-percentile completion time
+r.table["criticality_index"]     # per activity, from the simulation
+```
 
-Every release must reproduce, in `tests/validation_cases.json` (each
-case ships with its full derivation):
+The cheapest way to hit a deadline, as a linear program rather than by hand:
 
-1. the General Foundry reference network — complete ES/EF/LS/LF/slack
-   table, 15-period critical path, and optimal crash costs to 14 and 13
-   periods,
-2. hand-derived EVM/earned-schedule cases covering the full indicator
-   set and the ES interpolation formula,
-3. identity and property checks (slack = LS−ES = LF−EF; SPI(t) = ES/AT;
-   crash cost monotone in target; Monte Carlo means converging to
-   analytic values),
-4. (before 0.1) published PMI/Lipke earned-schedule case studies,
-   verified privately where copyright prevents redistribution.
+```python
+r = pm.crash(crash_activities, target=13)
+r.stats["total_crash_cost"]      # globally optimal, not greedy
+r.table["crash_amount"]          # how much to compress each activity
+```
 
-## Status
+Freeze the planned value curve once, then control against it every period:
 
-0.1.0 — first public release. The API surface is small on purpose; the
-`Result`/`PMB` contract is frozen and append-only from this version on.
+```python
+import sys
+
+pm.plan(periods, pv).save("pmb.json")   # commit this to version control
+
+r = pm.evm("pmb.json", ev=30_000, ac=35_000, at=4)
+r.ok                 # False if CPI or SPI(t) is below threshold
+r.summary()          # plain text verdict
+r.stats["ieac_t"]    # earned-schedule duration forecast
+sys.exit(0 if r.ok else 1)
+```
+
+Every analysis returns the same `Result` object: named statistics, a tidy
+table, a tuple of structured alerts, and provenance metadata (library
+version, input hash, timestamp).
+
+If you are wiring this into an AI agent, read
+[Project control is not a language task](https://arikanatakan.github.io/pmcontrols/agents/)
+first.
 
 ## Roadmap
 
 | Version | Scope |
-| ------- | ----- |
-| 0.2 | Published PMI/Lipke earned-schedule case-study validation; Gantt and OC plotting (separate from the statistics) |
-| 0.3 | Resource leveling and constrained scheduling; schedule risk drivers (correlation, risk events); EVM from time-phased ledgers (DataFrame in, indicators out) |
-| 0.4 | Critical chain buffers; probabilistic crashing (crash under uncertainty); ES forecasting variants (performance factors); JOSS paper |
+|---------|-------|
+| 0.2     | published PMI/Lipke earned-schedule case-study validation; Gantt and OC plotting, kept separate from the statistics |
+| 0.3     | resource leveling and constrained scheduling; schedule risk drivers (correlation, risk events); EVM from time-phased ledgers |
+| 0.4     | critical chain buffers; probabilistic crashing; earned-schedule forecasting variants; JOSS paper |
 
-Out of scope: Gantt-chart project *editors* (use dedicated PM tools),
-process control, acceptance sampling (see lotsampling), generic LP modeling
-(use scipy/pyomo directly).
+Out of scope: Gantt-chart project editors (use dedicated PM tools), process
+control, acceptance sampling (see [lotsampling](https://github.com/arikanatakan/lotsampling)),
+general linear programming (use scipy or pyomo directly).
 
 ## License
 
