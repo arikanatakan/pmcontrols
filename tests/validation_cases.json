@@ -347,6 +347,21 @@
         }
       },
       "tol": 1e-9
+    },
+    {
+      "id": "evm-projectengineer-007",
+      "method": "evm",
+      "source": "ProjectEngineer.net earned value worked example (Set up Database task). Published CV=-2500, SV=-1000, CPI=0.44, SPI=0.67, EAC = AC + (BAC - EV) = 12500.",
+      "derivation": "BAC=10000. At the status point PV=3000, EV=2000, AC=4500. CV=EV-AC=-2500; SV=EV-PV=-1000; CPI=EV/AC=0.444; SPI=EV/PV=0.667; EAC(typical)=AC+(BAC-EV)=12500. The PMB is encoded as periods [0,1,2], pv [0,3000,10000] so PV at t=1 equals 3000. Tolerance 5e-3 accommodates the published two-decimal CPI/SPI rounding.",
+      "inputs": {
+        "periods": [0, 1, 2],
+        "pv": [0, 3000, 10000],
+        "ev": 2000, "ac": 4500, "at": 1
+      },
+      "expected": {
+        "cv": -2500, "sv": -1000, "cpi": 0.44, "spi": 0.67, "eac_typical": 12500
+      },
+      "tol": 5e-3
     }
   ]
 }
