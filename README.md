@@ -14,6 +14,8 @@ An optional plotting layer turns any result into the standard project
 visuals: a Gantt chart, an activity-network diagram, an earned-value
 S-curve, a criticality bar chart, and a Monte Carlo completion histogram.
 
+![pmcontrols architecture: a validated computation core (inputs to analyses to one Result), with an optional visualization layer that branches off the same Result](docs/assets/framework.png)
+
 ## Motivation
 
 Every project office computes CPI and SPI, and almost all of it happens in
