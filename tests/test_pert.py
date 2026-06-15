@@ -64,3 +64,22 @@ def test_criticality_index_general_foundry():
 def test_rejects_bad_three_point():
     with pytest.raises(ValueError):
         pm.pert([{"id": "A", "predecessors": [], "a": 5, "m": 2, "b": 9}])  # a > m
+
+
+def test_monte_carlo_converges_to_analytic_mean():
+    """The Monte Carlo mean converges to the analytic critical-path mean.
+
+    The PERT-beta distribution is built so its mean equals te, so the sum over
+    a series converges to the analytic expected duration. Variance is not
+    asserted: the (b - a) / 6 standard deviation is an approximation that
+    differs from the sampled beta's true variance, by design.
+    """
+    acts = [
+        {"id": "A", "predecessors": [],    "a": 2, "m": 5, "b": 14},
+        {"id": "B", "predecessors": ["A"], "a": 2, "m": 5, "b": 14},
+        {"id": "C", "predecessors": ["B"], "a": 2, "m": 5, "b": 14},
+    ]
+    r = pm.pert(acts, n_sim=200_000, seed=0)
+    assert r.stats["expected_duration"] == pytest.approx(18.0)   # 3 * te, te=6
+    assert r.stats["mc_mean"] == pytest.approx(18.0, abs=0.1)
+    assert r.stats["mc_p50"] < r.stats["mc_p80"] < r.stats["mc_p95"]
