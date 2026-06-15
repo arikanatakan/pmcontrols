@@ -12,6 +12,10 @@ Critical path and PERT scheduling, minimum-cost schedule compression, and
 earned value management with earned schedule. Results are computed from the
 standard formulations and checked against reference values in the test suite.
 
+An optional plotting layer turns any result into the standard project
+visuals: a Gantt chart, an activity-network diagram, an earned-value
+S-curve, a criticality bar chart, and a Monte Carlo completion histogram.
+
 ## Motivation
 
 Every project office computes CPI and SPI, and almost all of it happens in
