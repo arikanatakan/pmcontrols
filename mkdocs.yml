@@ -28,6 +28,7 @@ nav:
   - Reference:
       - API: reference/api.md
       - Validation: reference/validation.md
+      - References: reference/references.md
   - For agents: agents.md
 
 markdown_extensions:
