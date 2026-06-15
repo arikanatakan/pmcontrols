@@ -112,16 +112,6 @@ Stair & Hanna; the 15-period schedule and the A-C-E-G-H critical path are
 computed by the forward and backward pass, and reproduced exactly as a
 validation case.
 
-Draw that schedule as a Gantt chart (needs `pip install "pmcontrols[plot]"`):
-
-```python
-fig, ax = pm.gantt(r)        # critical path in red, total float in light grey
-fig.savefig("schedule.png")
-```
-
-The same extra gives `pm.network_diagram(r)`, `pm.evm_curve(pmb, evm_result)`,
-`pm.criticality(pert_result)`, and `pm.mc_distribution(pert_result)`.
-
 Schedule risk from three-point estimates, with the Monte Carlo completion
 distribution the analytic method cannot give:
 
@@ -156,6 +146,17 @@ r.stats["ieac_t"]    # earned-schedule duration forecast
 sys.exit(0 if r.ok else 1)
 ```
 
+Any result can be turned into a chart (needs `pip install "pmcontrols[plot]"`):
+
+```python
+fig, ax = pm.gantt(pm.cpm(activities))   # critical path red, float light grey
+fig.savefig("schedule.png")
+```
+
+The same extra gives `network_diagram` (the activity network), `evm_curve`
+(the earned-value S-curve), and `criticality` / `mc_distribution` (Monte
+Carlo schedule risk).
+
 Every analysis returns the same `Result` object: named statistics, a tidy
 table, a tuple of structured alerts, and provenance metadata (library
 version, input hash, timestamp).
@@ -168,15 +169,13 @@ first.
 
 | Version | Scope |
 |---------|-------|
-| 0.3     | published PMI/Lipke earned-schedule case-study validation; OC plotting; resource leveling and constrained scheduling; EVM from time-phased ledgers |
+| 0.3     | published PMI/Lipke earned-schedule case-study validation; resource leveling and constrained scheduling; EVM from time-phased ledgers |
 | 0.4     | critical chain buffers; probabilistic crashing; earned-schedule forecasting variants; JOSS paper |
 
 pmcontrols plots Gantt charts and the other schedule visuals, but it is a
 computation library, not a project-editing application. Out of scope:
 interactive project editors and drag-and-drop schedulers (use dedicated PM
-tools), process control, acceptance sampling (see
-[lotsampling](https://github.com/arikanatakan/lotsampling)), general linear
-programming (use scipy or pyomo directly).
+tools), and general linear programming (use scipy or pyomo directly).
 
 ## License
 
