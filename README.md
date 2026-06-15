@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/arikanatakan/pmcontrols/actions/workflows/ci.yml/badge.svg)](https://github.com/arikanatakan/pmcontrols/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/pmcontrols)](https://pypi.org/project/pmcontrols/)
+[![Python](https://img.shields.io/pypi/pyversions/pmcontrols)](https://pypi.org/project/pmcontrols/)
 [![License: MIT](https://img.shields.io/github/license/arikanatakan/pmcontrols)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-mkdocs--material-blue)](https://arikanatakan.github.io/pmcontrols/)
 
 Project scheduling and earned value control for Python.
 
