@@ -1,4 +1,4 @@
-"""pmcontrols — project scheduling and earned value control for Python.
+"""pmcontrols - project scheduling and earned value control for Python.
 
 Validated, pandas-native, automation-first project controls.
 

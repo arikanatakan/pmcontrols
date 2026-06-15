@@ -40,14 +40,14 @@ the longest-looking chain of activities and stops. The critical path is
 not the longest chain you can see; it is the set of activities with zero
 total float, which only falls out of a full forward *and* backward pass.
 Skip the backward pass and parallel near-critical paths vanish from the
-report — the ones most likely to actually slip.
+report - the ones most likely to actually slip.
 
 **SPI that heals itself.** EV/PV returns to 1.0 at completion no matter how
 late the finish. Reported alone, it is an indicator that goes blind right
-when the project is ending. Earned schedule — SPI(t) = ES/AT — does not.
+when the project is ending. Earned schedule - SPI(t) = ES/AT - does not.
 
 **The naked EAC.** "EAC = 1.18M, forecast finish month 11," case closed.
-Which EAC? BAC/CPI, AC + (BAC − EV), or the CPI×SPI blend? They disagree by
+Which EAC? BAC/CPI, AC + (BAC - EV), or the CPIxSPI blend? They disagree by
 hundreds of thousands of dollars on the same inputs, and the right one
 depends on whether the cost variance is structural or one-off. Quoting a
 single number without the method changes the claim, quietly.

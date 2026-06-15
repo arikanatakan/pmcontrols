@@ -1,7 +1,7 @@
 # Contributing to pmcontrols
 
 Thanks for your interest. pmcontrols aims to be small, correct, and
-validated. The bar for merging is not "the tests pass" — it is "the number
+validated. The bar for merging is not "the tests pass" - it is "the number
 is reproduced from a published or hand-derivable reference."
 
 ## Ground rules
@@ -12,7 +12,7 @@ is reproduced from a published or hand-derivable reference."
   a reference value is not merged.
 - **Compute from the defining formulation, not from tables or spreadsheet
   conventions.** Use the forward/backward pass, the LP, the interpolation
-  formula — not period-end snapshots or marginal-cost shortcuts.
+  formula - not period-end snapshots or marginal-cost shortcuts.
 - **The `Result`/`PMB` contract is append-only.** Within major version 0/1,
   no public name, signature, default, or field meaning is removed or
   changed. New fields may be added.
@@ -29,11 +29,11 @@ CI runs the same three steps on Python 3.10, 3.11 and 3.12.
 
 ## Architecture
 
-- `network.py` — `cpm`, `pert`; the shared `_normalize` / `_passes`
+- `network.py` - `cpm`, `pert`; the shared `_normalize` / `_passes`
   forward-backward engine.
-- `crash.py` — `crash`, the time/cost trade-off linear program.
-- `evm.py` — `plan`, `evm`, `earned_schedule`.
-- `_result.py` — the `Result` and `PMB` dataclasses and the JSON-safe
+- `crash.py` - `crash`, the time/cost trade-off linear program.
+- `evm.py` - `plan`, `evm`, `earned_schedule`.
+- `_result.py` - the `Result` and `PMB` dataclasses and the JSON-safe
   serialization. Every public function returns a `Result`.
 
 Each public function returns one `Result` so that downstream code (and
