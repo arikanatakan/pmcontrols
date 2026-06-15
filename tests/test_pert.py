@@ -83,3 +83,22 @@ def test_monte_carlo_converges_to_analytic_mean():
     assert r.stats["expected_duration"] == pytest.approx(18.0)   # 3 * te, te=6
     assert r.stats["mc_mean"] == pytest.approx(18.0, abs=0.1)
     assert r.stats["mc_p50"] < r.stats["mc_p80"] < r.stats["mc_p95"]
+
+
+def test_monte_carlo_matches_analytic_beta():
+    """A single activity: the simulated completion distribution matches the
+    exact PERT-beta the sampler draws from, checked against scipy's closed-form
+    beta (an independent reference). This validates the simulation engine: both
+    the mean and an upper percentile converge to their analytic values.
+    """
+    from scipy.stats import beta as beta_dist
+
+    a, m, b = 2.0, 5.0, 14.0
+    alpha = 1 + 4 * (m - a) / (b - a)   # 2
+    beta = 6 - alpha                    # 4
+    r = pm.pert([{"id": "X", "predecessors": [], "a": a, "m": m, "b": b}],
+                n_sim=300_000, seed=0)
+    analytic_mean = a + (b - a) * alpha / (alpha + beta)
+    analytic_p80 = a + (b - a) * beta_dist.ppf(0.80, alpha, beta)
+    assert r.stats["mc_mean"] == pytest.approx(analytic_mean, abs=0.03)
+    assert r.stats["mc_p80"] == pytest.approx(analytic_p80, abs=0.05)
