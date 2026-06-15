@@ -49,3 +49,52 @@ def test_gantt_rejects_non_schedule_result():
     r = pm.evm(pmb, ev=40, ac=45, at=1)
     with pytest.raises(ValueError):
         pm.gantt(r)
+
+
+def _three_point():
+    return [
+        {"id": a["id"], "predecessors": a["predecessors"],
+         "a": a["duration"] * 0.8, "m": a["duration"], "b": a["duration"] * 1.3}
+        for a in FOUNDRY
+    ]
+
+
+def test_evm_curve():
+    import matplotlib
+    matplotlib.use("Agg")
+    pmb = pm.plan([0, 1, 2, 3, 4], [0, 25, 50, 75, 100])
+    r = pm.evm(pmb, ev=40, ac=45, at=2)
+    fig, ax = pm.evm_curve(pmb, r)
+    assert ax.get_title()
+    import matplotlib.pyplot as plt
+    plt.close(fig)
+
+
+def test_network_diagram():
+    import matplotlib
+    matplotlib.use("Agg")
+    fig, ax = pm.network_diagram(pm.cpm(FOUNDRY))
+    assert ax.get_title()
+    import matplotlib.pyplot as plt
+    plt.close(fig)
+
+
+def test_criticality():
+    import matplotlib
+    matplotlib.use("Agg")
+    fig, ax = pm.criticality(pm.pert(_three_point(), n_sim=2000, seed=1))
+    assert ax.get_title()
+    import matplotlib.pyplot as plt
+    plt.close(fig)
+
+
+def test_mc_distribution_requires_samples():
+    import matplotlib
+    matplotlib.use("Agg")
+    with pytest.raises(ValueError):
+        pm.mc_distribution(pm.pert(_three_point(), n_sim=1000, seed=1))
+    r = pm.pert(_three_point(), n_sim=2000, seed=1, keep_samples=True)
+    fig, ax = pm.mc_distribution(r)
+    assert ax.get_title()
+    import matplotlib.pyplot as plt
+    plt.close(fig)

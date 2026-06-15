@@ -20,9 +20,10 @@ from ._version import __version__
 from .crash import crash
 from .evm import earned_schedule, evm, plan
 from .network import cpm, pert
-from .plot import gantt
+from .plot import criticality, evm_curve, gantt, mc_distribution, network_diagram
 
 __all__ = [
     "cpm", "pert", "crash", "evm", "plan", "earned_schedule",
-    "gantt", "Result", "Alert", "PMB", "__version__",
+    "gantt", "evm_curve", "network_diagram", "criticality", "mc_distribution",
+    "Result", "Alert", "PMB", "__version__",
 ]

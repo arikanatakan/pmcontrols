@@ -5,7 +5,7 @@ type: software
 authors:
   - given-names: Atakan
     family-names: Arikan
-version: 0.2.0
+version: 0.2.1
 date-released: 2026-06-15
 repository-code: "https://github.com/arikanatakan/pmcontrols"
 license: MIT

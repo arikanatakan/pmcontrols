@@ -27,6 +27,10 @@ major version 0/1.
 - `evm(pmb, ev, ac, at, thresholds=None)`
 - `earned_schedule(pmb, ev) -> float`
 - `gantt(result, ax=None, show_slack=True, title=None) -> (figure, axes)` (needs the `plot` extra)
+- `network_diagram(result, ax=None, title=None) -> (figure, axes)` (needs the `plot` extra)
+- `evm_curve(pmb, result, ax=None, title=None) -> (figure, axes)` (needs the `plot` extra)
+- `criticality(result, ax=None, title=None) -> (figure, axes)` (needs the `plot` extra)
+- `mc_distribution(result, ax=None, bins=40, title=None) -> (figure, axes)` (needs the `plot` extra; `pert(..., keep_samples=True)`)
 
 ## PMB
 

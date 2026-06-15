@@ -123,6 +123,7 @@ def crash(
         "input_hash": data_hash({a: [float(d[idx[a]]), float(dc[idx[a]]),
                                      float(cost[idx[a]])] for a in names}),
         "solver": "scipy.linprog/highs",
+        "predecessors": {a: list(acts[a]["preds"]) for a in names},
     }
     return Result(method="crash", params={"target": target}, stats=stats,
                   table=sched, meta=meta)

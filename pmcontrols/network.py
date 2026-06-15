@@ -120,6 +120,7 @@ def cpm(activities: Iterable[Activity], duration: str = "duration") -> Result:
         "version": __version__,
         "input_hash": data_hash({a: dur[a] for a in sorted(dur)}),
         "critical_activities": crit,
+        "predecessors": {a: list(acts[a]["preds"]) for a in acts},
     }
     return Result(method="cpm", params={"duration": duration},
                   stats=stats, table=table, meta=meta)
@@ -132,6 +133,7 @@ def pert(
     pessimistic: str = "b",
     n_sim: int = 20_000,
     seed: int | None = 0,
+    keep_samples: bool = False,
 ) -> Result:
     """PERT three-point analysis with Monte Carlo schedule risk.
 
@@ -220,5 +222,8 @@ def pert(
             str(q): float(np.percentile(finish, q)) for q in (5, 25, 50, 75, 95)
         },
     }
+    if keep_samples:
+        # A capped sample of completion times, for the Monte Carlo histogram.
+        meta["mc_finish_sample"] = [float(x) for x in finish[:2000]]
     return Result(method="pert", params={"n_sim": n_sim}, stats=stats,
                   table=base, meta=meta)

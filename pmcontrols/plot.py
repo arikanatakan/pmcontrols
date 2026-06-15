@@ -90,3 +90,185 @@ def gantt(result: Result, ax=None, show_slack: bool = True, title: str | None = 
 
     fig.tight_layout()
     return fig, ax
+
+
+def _require_matplotlib():
+    try:
+        import matplotlib.pyplot as plt
+
+        return plt
+    except ModuleNotFoundError as exc:  # pragma: no cover - import guard
+        raise ModuleNotFoundError(
+            "this plot requires matplotlib; install it with: "
+            "pip install 'pmcontrols[plot]'"
+        ) from exc
+
+
+def evm_curve(pmb, result: Result, ax=None, title: str | None = None):
+    """Earned value S-curve: the planned-value baseline with EV, AC, BAC and
+    the earned-schedule forecast at the status date.
+
+    Parameters
+    ----------
+    pmb : the Performance Measurement Baseline (the planned-value curve).
+    result : the matching ``evm`` Result.
+    """
+    plt = _require_matplotlib()
+    if getattr(result, "method", None) != "evm":
+        raise ValueError(f"evm_curve() expects an evm result, got {result.method!r}")
+    s = result.stats
+    at, ev, ac = float(s["at"]), float(s["ev"]), float(s["ac"])
+    bac = float(pmb.bac)
+    ieac = s.get("ieac_t")
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8.0, 5.0))
+    else:
+        fig = ax.figure
+
+    ax.plot(list(pmb.periods), list(pmb.pv), color="#4a86c5", marker="o",
+            markersize=3, label="PV (planned value)")
+    ax.axhline(bac, color="#7f8c8d", linestyle="--", linewidth=1, label="BAC")
+    ax.axvline(at, color="#bdc3c7", linestyle=":", linewidth=1)
+    ax.plot([at], [ev], marker="o", markersize=10, color="#2e8b57",
+            label="EV (earned value)")
+    ax.plot([at], [ac], marker="s", markersize=10, color="#c0392b",
+            label="AC (actual cost)")
+    if ieac is not None and ieac == ieac:  # ieac == ieac excludes NaN
+        ax.plot([at, float(ieac)], [ev, bac], color="#2e8b57", linestyle="--",
+                linewidth=1, label="EV forecast (to IEAC)")
+
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Cumulative value / cost")
+    ax.set_title(title or "Earned value (S-curve)")
+    ax.grid(linestyle=":", alpha=0.5)
+    ax.legend(fontsize=8, loc="upper left")
+    fig.tight_layout()
+    return fig, ax
+
+
+def criticality(result: Result, ax=None, title: str | None = None):
+    """Bar chart of each activity's criticality index from a ``pert`` result."""
+    plt = _require_matplotlib()
+    if getattr(result, "method", None) != "pert":
+        raise ValueError(
+            f"criticality() expects a pert result, got {result.method!r}"
+        )
+    df = result.table.sort_values("criticality_index", ascending=True)
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8.0, 0.45 * len(df) + 1.2))
+    else:
+        fig = ax.figure
+    colors = [_CRITICAL if v >= 0.5 else _NORMAL for v in df["criticality_index"]]
+    ax.barh(df["activity"].astype(str), df["criticality_index"], color=colors)
+    ax.set_xlim(0, 1)
+    ax.set_xlabel("Criticality index (share of simulations on the critical path)")
+    ax.set_title(title or "Activity criticality")
+    ax.grid(axis="x", linestyle=":", alpha=0.5)
+    fig.tight_layout()
+    return fig, ax
+
+
+def mc_distribution(result: Result, ax=None, bins: int = 40, title: str | None = None):
+    """Histogram of Monte Carlo completion times from a ``pert`` result.
+
+    The result must come from ``pert(..., keep_samples=True)``.
+    """
+    plt = _require_matplotlib()
+    if getattr(result, "method", None) != "pert":
+        raise ValueError(
+            f"mc_distribution() expects a pert result, got {result.method!r}"
+        )
+    sample = result.meta.get("mc_finish_sample")
+    if not sample:
+        raise ValueError(
+            "no Monte Carlo sample on this result; "
+            "re-run pert(..., keep_samples=True)"
+        )
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8.0, 5.0))
+    else:
+        fig = ax.figure
+    ax.hist(sample, bins=bins, color="#4a86c5", edgecolor="white")
+    for key, color in (("mc_p50", "#2e8b57"), ("mc_p80", "#e67e22"),
+                       ("mc_p95", "#c0392b")):
+        value = result.stats.get(key)
+        if value is not None:
+            ax.axvline(float(value), color=color, linestyle="--", linewidth=1.2,
+                       label=f"{key[3:].upper()} = {float(value):.1f}")
+    ax.set_xlabel("Completion time")
+    ax.set_ylabel("Simulations")
+    ax.set_title(title or "Monte Carlo completion distribution")
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    return fig, ax
+
+
+def network_diagram(result: Result, ax=None, title: str | None = None):
+    """Activity-on-node network diagram with the critical path highlighted.
+
+    Works on a ``cpm`` or ``crash`` result, reading precedence from the
+    result's provenance. Activities are placed by earliest start.
+    """
+    plt = _require_matplotlib()
+    if getattr(result, "method", None) not in ("cpm", "crash"):
+        raise ValueError(
+            f"network_diagram() expects a cpm or crash result, "
+            f"got {result.method!r}"
+        )
+    preds = result.meta.get("predecessors")
+    if preds is None:
+        raise ValueError("result carries no precedence information")
+    df = result.table.set_index("activity")
+
+    by_es: dict[float, list] = {}
+    for activity in df.index:
+        by_es.setdefault(float(df.loc[activity, "es"]), []).append(activity)
+    pos = {}
+    for es in sorted(by_es):
+        column = by_es[es]
+        for i, activity in enumerate(column):
+            pos[activity] = (es, i - (len(column) - 1) / 2.0)
+
+    if ax is None:
+        width = 1.7 * max(1, len(by_es)) + 2.0
+        height = 0.95 * max(len(v) for v in by_es.values()) + 2.0
+        fig, ax = plt.subplots(figsize=(width, height))
+    else:
+        fig = ax.figure
+
+    for activity in df.index:
+        for p in preds.get(activity, []):
+            if p in pos:
+                x0, y0 = pos[p]
+                x1, y1 = pos[activity]
+                critical_edge = bool(df.loc[p, "critical"]) and bool(
+                    df.loc[activity, "critical"]
+                )
+                ax.annotate(
+                    "", xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(
+                        arrowstyle="->",
+                        color=_CRITICAL if critical_edge else "#95a5a6",
+                        lw=1.8 if critical_edge else 1.0,
+                        shrinkA=16, shrinkB=16,
+                    ),
+                )
+
+    for activity in df.index:
+        x, y = pos[activity]
+        critical = bool(df.loc[activity, "critical"])
+        ax.scatter(
+            [x], [y], s=1100, marker="o", zorder=3,
+            color="#f9d6d1" if critical else "#dfe9f3",
+            edgecolors=_CRITICAL if critical else _NORMAL, linewidths=1.8,
+        )
+        ax.text(x, y, f"{activity}\n{df.loc[activity, 'duration']:g}",
+                ha="center", va="center", fontsize=8, zorder=4)
+
+    ax.set_title(title or "Activity network (critical path in red)")
+    ax.set_xlabel("Earliest start")
+    ax.set_yticks([])
+    ax.margins(0.15)
+    fig.tight_layout()
+    return fig, ax

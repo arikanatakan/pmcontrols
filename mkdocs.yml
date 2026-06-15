@@ -24,7 +24,7 @@ nav:
       - Schedule crashing as a linear program: guides/crashing.md
       - Earned value and earned schedule: guides/earned-value.md
       - EVM control as a cron job: guides/evm-cron.md
-      - Gantt charts: guides/gantt.md
+      - Charts: guides/gantt.md
   - Reference:
       - API: reference/api.md
       - Validation: reference/validation.md

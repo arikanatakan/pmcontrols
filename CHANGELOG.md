@@ -5,6 +5,19 @@ All notable changes are recorded here. The public API on the
 frozen from 0.1.0 on: no public name, signature, default value, or field
 meaning will be removed or change meaning within major version 0/1.
 
+## 0.2.1
+
+### Added
+
+* Visualization suite (optional `plot` extra, matplotlib): `evm_curve` (earned
+  value S-curve), `network_diagram` (activity-on-node graph with the critical
+  path), `criticality` (Monte Carlo criticality bars), and `mc_distribution`
+  (PERT completion histogram), alongside the existing `gantt`.
+* `pert(..., keep_samples=True)` stores a capped Monte Carlo completion sample
+  (`meta["mc_finish_sample"]`) for the histogram.
+* `cpm` and `crash` results now carry `meta["predecessors"]`, so the network
+  diagram can be drawn from the result alone.
+
 ## 0.2.0
 
 ### Added

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pmcontrols"
-version = "0.2.0"
+version = "0.2.1"
 description = "Project scheduling and earned value control for Python: CPM, PERT with Monte Carlo schedule risk, minimum-cost crashing, EVM and earned schedule, validated against published reference values."
 readme = "README.md"
 license = { text = "MIT" }
