@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "Seed of the public validation suite. Cases are either hand-derived with a fully published derivation, or reproduce the General Foundry example as printed in Render, Stair & Hanna (Quantitative Analysis for Management) and standard ETM course materials. Only the numeric activity table is reproduced (facts/data, not expression). PMI/Lipke earned-schedule literature cases will be verified privately before 0.1.",
+  "note": "Seed of the public validation suite. Cases are either hand-derived with a fully published derivation, or reproduce published textbook networks (the General Foundry example from Render, Stair & Hanna, Quantitative Analysis for Management; the Reliable Construction Co. example from Hillier & Lieberman, Introduction to Operations Research). Only the numeric activity table is reproduced (facts/data, not expression). PMI/Lipke earned-schedule literature cases will be verified privately before 0.1.",
   "cases": [
     {
       "id": "cpm-general-foundry-001",
@@ -302,6 +302,51 @@
       },
       "expected": { "es": 2.6 },
       "tol": 1e-12
+    },
+    {
+      "id": "cpm-reliable-construction-006",
+      "method": "cpm",
+      "source": "Hillier & Lieberman, Introduction to Operations Research (Reliable Construction Co., Ch. 10). Published critical path A-B-C-E-F-J-L-N, project duration 44 weeks.",
+      "derivation": "14-activity construction network. Longest path A(2)-B(4)-C(10)-E(4)-F(5)-J(8)-L(5)-N(6) = 44 weeks, reproduced exactly, including the published activity slacks (D, G, H, M = 4; I = 2; K = 1).",
+      "inputs": {
+        "activities": [
+          {"id": "A", "predecessors": [], "duration": 2},
+          {"id": "B", "predecessors": ["A"], "duration": 4},
+          {"id": "C", "predecessors": ["B"], "duration": 10},
+          {"id": "D", "predecessors": ["C"], "duration": 6},
+          {"id": "E", "predecessors": ["C"], "duration": 4},
+          {"id": "F", "predecessors": ["E"], "duration": 5},
+          {"id": "G", "predecessors": ["D"], "duration": 7},
+          {"id": "H", "predecessors": ["E", "G"], "duration": 9},
+          {"id": "I", "predecessors": ["C"], "duration": 7},
+          {"id": "J", "predecessors": ["F", "I"], "duration": 8},
+          {"id": "K", "predecessors": ["J"], "duration": 4},
+          {"id": "L", "predecessors": ["J"], "duration": 5},
+          {"id": "M", "predecessors": ["H"], "duration": 2},
+          {"id": "N", "predecessors": ["K", "L"], "duration": 6}
+        ]
+      },
+      "expected": {
+        "project_duration": 44,
+        "critical_path": ["A", "B", "C", "E", "F", "J", "L", "N"],
+        "schedule": {
+          "A": {"es": 0, "ef": 2, "ls": 0, "lf": 2, "slack": 0},
+          "B": {"es": 2, "ef": 6, "ls": 2, "lf": 6, "slack": 0},
+          "C": {"es": 6, "ef": 16, "ls": 6, "lf": 16, "slack": 0},
+          "D": {"es": 16, "ef": 22, "ls": 20, "lf": 26, "slack": 4},
+          "E": {"es": 16, "ef": 20, "ls": 16, "lf": 20, "slack": 0},
+          "F": {"es": 20, "ef": 25, "ls": 20, "lf": 25, "slack": 0},
+          "G": {"es": 22, "ef": 29, "ls": 26, "lf": 33, "slack": 4},
+          "H": {"es": 29, "ef": 38, "ls": 33, "lf": 42, "slack": 4},
+          "I": {"es": 16, "ef": 23, "ls": 18, "lf": 25, "slack": 2},
+          "J": {"es": 25, "ef": 33, "ls": 25, "lf": 33, "slack": 0},
+          "K": {"es": 33, "ef": 37, "ls": 34, "lf": 38, "slack": 1},
+          "L": {"es": 33, "ef": 38, "ls": 33, "lf": 38, "slack": 0},
+          "M": {"es": 38, "ef": 40, "ls": 42, "lf": 44, "slack": 4},
+          "N": {"es": 38, "ef": 44, "ls": 38, "lf": 44, "slack": 0}
+        }
+      },
+      "tol": 1e-9
     }
   ]
 }
