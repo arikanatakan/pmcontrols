@@ -169,9 +169,12 @@ first.
 | 0.3     | published PMI/Lipke earned-schedule case-study validation; OC plotting; resource leveling and constrained scheduling; EVM from time-phased ledgers |
 | 0.4     | critical chain buffers; probabilistic crashing; earned-schedule forecasting variants; JOSS paper |
 
-Out of scope: Gantt-chart project editors (use dedicated PM tools), process
-control, acceptance sampling (see [lotsampling](https://github.com/arikanatakan/lotsampling)),
-general linear programming (use scipy or pyomo directly).
+pmcontrols plots Gantt charts and the other schedule visuals, but it is a
+computation library, not a project-editing application. Out of scope:
+interactive project editors and drag-and-drop schedulers (use dedicated PM
+tools), process control, acceptance sampling (see
+[lotsampling](https://github.com/arikanatakan/lotsampling)), general linear
+programming (use scipy or pyomo directly).
 
 ## License
 
