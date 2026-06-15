@@ -39,6 +39,7 @@ Homepage = "https://github.com/arikanatakan/pmcontrols"
 Documentation = "https://arikanatakan.github.io/pmcontrols/"
 Repository = "https://github.com/arikanatakan/pmcontrols"
 Issues = "https://github.com/arikanatakan/pmcontrols/issues"
+"MCP server" = "https://github.com/arikanatakan/pmcontrols-mcp"
 
 [tool.setuptools.packages.find]
 include = ["pmcontrols*"]

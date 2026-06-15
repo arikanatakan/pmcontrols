@@ -181,6 +181,11 @@ computation library, not a project-editing application. Out of scope:
 interactive project editors and drag-and-drop schedulers (use dedicated PM
 tools), and general linear programming (use scipy or pyomo directly).
 
+## Related
+
+[pmcontrols-mcp](https://github.com/arikanatakan/pmcontrols-mcp) exposes these
+analyses and charts to AI agents over the Model Context Protocol.
+
 ## License
 
 MIT. Written and maintained by [Atakan Arikan](https://github.com/arikanatakan),
