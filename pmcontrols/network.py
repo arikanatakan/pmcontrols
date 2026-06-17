@@ -163,7 +163,7 @@ def pert(
 
     rng = np.random.default_rng(seed)
     names = list(acts)
-    samples = {}
+    samples: dict[str, np.ndarray] = {}
     for k in names:
         a, b = lo[k], hi[k]
         if b - a < 1e-12:
