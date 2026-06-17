@@ -47,9 +47,10 @@ pmcontrols is an attempt to fill that gap, with a few specific goals:
 pip install pmcontrols
 ```
 
-Plotting is an optional layer: the validated core depends only on numpy,
-scipy and pandas, so it stays lightweight and headless for CI, cron jobs and
-agents. Add the `[plot]` extra (matplotlib) only when you want the charts:
+Plotting is an optional layer: the validated core is built on the scientific
+Python stack (numpy, scipy and pandas) and stays headless, so it runs in CI,
+cron jobs and agents without a display. Add the `[plot]` extra (matplotlib)
+only when you want the charts:
 
 ```
 pip install "pmcontrols[plot]"

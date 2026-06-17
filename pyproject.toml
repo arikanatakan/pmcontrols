@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "pmcontrols"
 version = "0.2.1"
 description = "Project scheduling and earned value control for Python: CPM, PERT with Monte Carlo schedule risk, minimum-cost crashing, EVM and earned schedule, validated against published reference values."
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Atakan Arikan" }]
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0", "scipy>=1.10"]
@@ -20,11 +21,11 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Manufacturing",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
     "Topic :: Office/Business :: Scheduling",
 ]
@@ -46,6 +47,12 @@ include = ["pmcontrols*"]
 
 [tool.setuptools.package-data]
 pmcontrols = ["py.typed"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.mypy]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

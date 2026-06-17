@@ -21,11 +21,12 @@ is reproduced from a published or hand-derivable reference."
 
 ```
 pip install -e ".[dev]"
-python -m pytest tests/ -q
 ruff check .
+mypy pmcontrols
+python -m pytest tests/ -q
 ```
 
-CI runs the same three steps on Python 3.10, 3.11 and 3.12.
+CI runs the same checks on Python 3.10 to 3.13.
 
 ## Architecture
 
