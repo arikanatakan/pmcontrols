@@ -5,6 +5,17 @@ All notable changes are recorded here. The public API on the
 frozen from 0.1.0 on: no public name, signature, default value, or field
 meaning will be removed or change meaning within major version 0/1.
 
+## Unreleased
+
+### Added
+
+- Example `examples/automotive_program.py`: an end-to-end run of the whole
+  toolkit (critical path, PERT schedule risk, a launch-window crash, and an
+  earned-value status check with custom control limits) on a global automaker's
+  new-vehicle development program. The work-breakdown follows the automotive
+  APQP phases (durations and costs are illustrative, not a company's internal
+  plan).
+
 ## 0.2.1
 
 ### Added
