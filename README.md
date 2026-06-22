@@ -170,6 +170,23 @@ If you are wiring this into an AI agent, read
 [Project control is not a language task](https://arikanatakan.github.io/pmcontrols/agents/)
 first.
 
+## Worked example
+
+[`examples/automotive_program.py`](examples/automotive_program.py) runs the whole
+toolkit on one program: a global automaker's concept-to-start-of-production
+new-vehicle programme (work-breakdown following the automotive APQP phases;
+durations and costs illustrative). It produces the critical path and schedule,
+PERT schedule risk, a launch-window crash, and an earned-value status check.
+Every chart it can draw, rendered by
+[`docs/assets/example_automotive.py`](docs/assets/example_automotive.py), is
+shown together below.
+
+![pmcontrols automotive example: the Gantt schedule, the activity network, the earned-value S-curve, the Monte Carlo criticality bars and the completion histogram, arranged in one panel](docs/assets/example_automotive.png)
+
+The program runs 37 months with tooling on the critical path; PERT puts the
+p80 completion at 41.4 months; at month 24 the earned-value check flags CPI 0.94
+and SPI(t) 0.92 against the program's tighter 0.95 control limits.
+
 ## Roadmap
 
 | Version | Scope |

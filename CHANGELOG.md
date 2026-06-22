@@ -15,6 +15,10 @@ meaning will be removed or change meaning within major version 0/1.
   new-vehicle development program. The work-breakdown follows the automotive
   APQP phases (durations and costs are illustrative, not a company's internal
   plan).
+- README "Worked example" section with a side-by-side panel of every chart that
+  example produces (Gantt, activity network, earned-value S-curve, Monte Carlo
+  criticality bars, completion histogram), rendered by
+  `docs/assets/example_automotive.py`.
 
 ## 0.2.1
 
