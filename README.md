@@ -183,9 +183,23 @@ shown together below.
 
 ![pmcontrols automotive example: the Gantt schedule, the activity network, the earned-value S-curve, the Monte Carlo criticality bars and the completion histogram, arranged in one panel](docs/assets/example_automotive.png)
 
-The program runs 37 months with tooling on the critical path; PERT puts the
-p80 completion at 41.4 months; at month 24 the earned-value check flags CPI 0.94
-and SPI(t) 0.92 against the program's tighter 0.95 control limits.
+Read together, the panel tells one story. The **Gantt** (top) lays out the
+37-month critical path (A-B-C-F-G-I-J-K-L-M) in red, with tooling (G, eight
+months) as the long pole and total float in grey on the activities with slack;
+the **activity network** (middle-left) shows why, the tooling branch dominating
+the two shorter paths that feed the validation merge at I. The **earned-value
+S-curve** (middle-right) places the program at month 24 below its planned-value
+baseline (EV under PV, behind schedule) and over cost (AC above EV): CPI 0.94 and
+SPI(t) 0.92 both breach the tighter 0.95 control limits, and the forecast lands
+past the baseline. The **criticality bars** (bottom-left) make the risk stark,
+ten activities on the critical path in 100% of the Monte Carlo runs and the three
+alternative-branch activities (D, E, H) in none, so schedule risk sits entirely
+on the spine, expedite tooling not the rest. The **completion histogram**
+(bottom-right) shows the deterministic 37 months is optimistic: with the launch
+downside the distribution is right-skewed to a p50 of 40.0, p80 of 41.4 and p95
+of 42.7 months. The takeaway: at the checkpoint the program is both behind and
+over budget, a realistic finish is three to six months past plan, and tooling is
+the one lever worth paying to compress.
 
 ## Roadmap
 
